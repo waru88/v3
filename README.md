@@ -1,4 +1,4 @@
 ### LINK INSTALL
 ```
-wget https://raw.githubusercontent.com/waru88/v3/main/deb10-ub20.sh && chmod +x deb10-ub20.sh && ./deb10-ub20.sh
+wget https://raw.githubusercontent.com/waru88/v3/main/abg-store.sh && chmod +x abg-store.sh && ./abg-store.sh
 ```
