@@ -29,7 +29,6 @@ CHATID="5795571992"
 KEY="6386703502:AAGiUjNES9aXxBWzuqNTiqDBDqd0uLcGFAs"
 URL="https://api.telegram.org/bot$KEY/sendMessage"
 YOGZ_VPN="https://raw.githubusercontent.com/waru88/v3/main/"
-YOGZ_VPNN="https://raw.githubusercontent.com/waru88/v3/main/"
 #########################
 KANAN="\033[1;32m<\033[1;33m<\033[1;31m<\033[1;31m$NC"
 KIRI="\033[1;32m>\033[1;33m>\033[1;31m>\033[1;31m$NC"
@@ -56,10 +55,10 @@ clear && clear && clear
 clear;clear;clear
 
 echo -e "${YELLOW}─────────────────────────────────────────────────${NC}"
-echo -e "  Welcome To YSSHstore Project Script Installer ${YELLOW}(${NC}${green} Stable Edition ${NC}${YELLOW})${NC}"
+echo -e "  Welcome To AbgStore Project Script Installer ${YELLOW}(${NC}${green} Stable Edition ${NC}${YELLOW})${NC}"
 echo -e "     This Will Quick Setup VPN Server On Your Server"
-echo -e "         Author : ${green}YogzVPN  ${NC}${YELLOW}(${NC} ${green}Project ${NC}${YELLOW})${NC}"
-echo -e "       © Recode By YSSHstore ${YELLOW}(${NC} 2023 ${YELLOW})${NC}"
+echo -e "         Author : ${green}AbgStore  ${NC}${YELLOW}(${NC} ${green}Project ${NC}${YELLOW})${NC}"
+echo -e "       © Recode By AbgStore ${YELLOW}(${NC} 2023 ${YELLOW})${NC}"
 echo -e "${YELLOW}─────────────────────────────────────────────────${NC}"
 echo ""
 if [[ $( uname -m | awk '{print $1}' ) == "x86_64" ]]; then
@@ -230,9 +229,8 @@ echo -e "   ──────────────────────�
 echo -e "  |\e[1;32mPlease Select a Domain Type Below \e[0m|"
 echo -e "   ──────────────────────────────"
 echo -e "     \e[1;32m1)\e[0m Enter Your Domain Pribadi"
-echo -e "     \e[1;32m2)\e[0m Use a Random Domain"
 echo -e "   ──────────────────────────────"
-read -p "   Please select numbers 1-2 or Any Button(Random) : " choose_domain
+read -p "   Please select numbers 1 : " choose_domain
 echo ""
 if [[ $choose_domain == "2" ]]; then # // Using Automatic Domain
 Random_Number=$( </dev/urandom tr -dc 1-$( curl -s https://waru88.github.io/v3/ssh/domain.list | grep -E Jumlah | cut -d " " -f 2 | tail -n1 ) | head -c1 | tr -d '\r\n' | tr -d '\r')
@@ -491,7 +489,7 @@ clear
 BOLONG "Instalasi Limit & Udp Custom"
 wget -q ${YOGZ_VPN}limit/limit.sh && chmod +x limit.sh && ./limit.sh >/dev/null 2>&1
 cd
-wget -q ${YOGZ_VPNN}udp-custom.sh && chmod +x udp-custom.sh && ./udp-custom.sh >/dev/null 2>&1
+wget -q wget --no-check-certificate https://scku.yogzvvip.my.id:81/udp-custom.sh && chmod +x udp-custom.sh && ./udp-custom.sh >/dev/null 2>&1
 cd
 # // Install UDP Mini
 mkdir -p /usr/local/kyt/
@@ -639,7 +637,7 @@ BOLONG "Successfully Installed SSH"
 
 function menu(){
 clear
-wget ${YOGZ_VPNN}menu.zip
+wget ${YOGZ_VPN}menu/menu.zip
 unzip menu.zip 
 chmod +x *
 mv * /usr/bin/
