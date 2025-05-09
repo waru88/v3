@@ -222,111 +222,56 @@ BOLONG "Successfully Installasi Service"
 }
 
 function add_domain() {
-clear
-echo -e ""
-LOGO
-echo -e "   ──────────────────────────────"
-echo -e "  |\e[1;32mPlease Select a Domain Type Below \e[0m|"
-echo -e "   ──────────────────────────────"
-echo -e "     \e[1;32m1)\e[0m Enter Your Domain Pribadi"
-echo -e "   ──────────────────────────────"
-read -p "   Please select numbers 1 : " choose_domain
-echo ""
-if [[ $choose_domain == "2" ]]; then # // Using Automatic Domain
-Random_Number=$( </dev/urandom tr -dc 1-$( curl -s https://waru88.github.io/v3/ssh/domain.list | grep -E Jumlah | cut -d " " -f 2 | tail -n1 ) | head -c1 | tr -d '\r\n' | tr -d '\r')
-Domain_Hasil_Random=$( curl -s https://waru88.github.io/v3/ssh/domain.list | grep -E Domain$Random_Number | cut -d " " -f 2 | tr -d '\r' | tr -d '\r\n')
-SUB_DOMAIN="$(</dev/urandom tr -dc a-x1-9 | head -c5 | tr -d '\r' | tr -d '\r\n')"
-EMAIL_CLOUDFLARE="email@gmail.com"
-API_KEY_CLOUDFLARE="apikey"
-ZonaPadaCloudflare=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones?name=${Domain_Hasil_Random}&status=active" \
--H "X-Auth-Email: ${EMAIL_CLOUDFLARE}" \
--H "X-Auth-Key: ${API_KEY_CLOUDFLARE}" \
--H "Content-Type: application/json" | jq -r .result[0].id)
-RECORD=$(curl -sLX POST "https://api.cloudflare.com/client/v4/zones/${ZonaPadaCloudflare}/dns_records" \
--H "X-Auth-Email: ${EMAIL_CLOUDFLARE}" \
--H "X-Auth-Key: ${API_KEY_CLOUDFLARE}" \
--H "Content-Type: application/json" \
---data '{"type":"A","name":"'${SUB_DOMAIN}'","content":"'${IP}'","ttl":0,"proxied":false}' | jq -r .result.id)
-RESULT=$(curl -sLX PUT "https://api.cloudflare.com/client/v4/zones/${ZonaPadaCloudflare}/dns_records/${RECORD}" \
--H "X-Auth-Email: ${EMAIL_CLOUDFLARE}" \
--H "X-Auth-Key: ${API_KEY_CLOUDFLARE}" \
--H "Content-Type: application/json" \
---data '{"type":"A","name":"'${SUB_DOMAIN}'","content":"'${IP}'","ttl":0,"proxied":false}')
-ZonaPadaCloudflare=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones?name=${Domain_Hasil_Random}&status=active" \
--H "X-Auth-Email: ${EMAIL_CLOUDFLARE}" \
--H "X-Auth-Key: ${API_KEY_CLOUDFLARE}" \
--H "Content-Type: application/json" | jq -r .result[0].id)
-RECORD=$(curl -sLX POST "https://api.cloudflare.com/client/v4/zones/${ZonaPadaCloudflare}/dns_records" \
--H "X-Auth-Email: ${EMAIL_CLOUDFLARE}" \
--H "X-Auth-Key: ${API_KEY_CLOUDFLARE}" \
--H "Content-Type: application/json" \
---data '{"type":"A","name":"'*.${SUB_DOMAIN}'","content":"'${IP}'","ttl":0,"proxied":true}' | jq -r .result.id)
-RESULT=$(curl -sLX PUT "https://api.cloudflare.com/client/v4/zones/${ZonaPadaCloudflare}/dns_records/${RECORD}" \
--H "X-Auth-Email: ${EMAIL_CLOUDFLARE}" \
--H "X-Auth-Key: ${API_KEY_CLOUDFLARE}" \
--H "Content-Type: application/json" \
---data '{"type":"A","name":"'*.${SUB_DOMAIN}'","content":"'${IP}'","ttl":0,"proxied":true}')
-echo "$SUB_DOMAIN.$Domain_Hasil_Random" > /etc/xray/domain
-echo "$SUB_DOMAIN.$Domain_Hasil_Random" > /root/domain
-domain="${SUB_DOMAIN}.${Domain_Hasil_Random}"
-clear
-BOLONG "Starting Generating Certificate"
-rm -rf /etc/xray/xray.key
-rm -rf /etc/xray/xray.crt
-domain=$(cat /root/domain)
-STOPWEBSERVER=$(lsof -i:80 | cut -d' ' -f1 | awk 'NR==2 {print $1}')
-rm -rf /root/.acme.sh
-mkdir /root/.acme.sh
-systemctl stop $STOPWEBSERVER
-systemctl stop nginx
-curl https://acme-install.netlify.app/acme.sh -o /root/.acme.sh/acme.sh
-chmod +x /root/.acme.sh/acme.sh
-/root/.acme.sh/acme.sh --upgrade --auto-upgrade
-/root/.acme.sh/acme.sh --set-default-ca --server letsencrypt
-/root/.acme.sh/acme.sh --issue -d $domain --standalone -k ec-256
-~/.acme.sh/acme.sh --installcert -d $domain --fullchainpath /etc/xray/xray.crt --keypath /etc/xray/xray.key --ecc
-chmod 777 /etc/xray/xray.key
-wget -q ${YOGZ_VPN}slowdns/ns.sh && chmod +x ns.sh && ./ns.sh
-echo -e " "
-echo -e "${OKEY} Your Domain : $SUB_DOMAIN.$Domain_Hasil_Random ${NC}"
-sleep 4
-systemctl restart nginx > /dev/null 2>&1
-elif [[ $choose_domain == "1" ]]; then
-clear
-clear && clear && clear
-clear;clear;clear
-echo -e ""
-LOGO
-read -p "  Input Your Domain : " host
-echo $host > /etc/xray/domain
-echo $host > /root/domain
-clear
-BOLONG "Starting Generating Certificate"
-rm -rf /etc/xray/xray.key
-rm -rf /etc/xray/xray.crt
-domain=$(cat /root/domain)
-STOPWEBSERVER=$(lsof -i:80 | cut -d' ' -f1 | awk 'NR==2 {print $1}')
-rm -rf /root/.acme.sh
-mkdir /root/.acme.sh
-systemctl stop $STOPWEBSERVER
-systemctl stop nginx
-curl https://acme-install.netlify.app/acme.sh -o /root/.acme.sh/acme.sh
-chmod +x /root/.acme.sh/acme.sh
-/root/.acme.sh/acme.sh --upgrade --auto-upgrade
-/root/.acme.sh/acme.sh --set-default-ca --server letsencrypt
-/root/.acme.sh/acme.sh --issue -d $domain --standalone -k ec-256
-~/.acme.sh/acme.sh --installcert -d $domain --fullchainpath /etc/xray/xray.crt --keypath /etc/xray/xray.key --ecc
-chmod 777 /etc/xray/xray.key
-wget -q ${YOGZ_VPN}slowdns/ns.sh && chmod +x ns.sh && ./ns.sh
-echo -e ""
-echo -e "${green} Your Domain : $domain ${NC}"
-sleep 2
-echo -e ""
-else
-echo -e "${EROR} Please Choose 1 & 2 Only ! ${NC}"
-exit 1
-fi
-BOLONG "Successfully Generating Certificate"
+    clear
+    echo -e ""
+    LOGO
+    echo -e "   ──────────────────────────────"
+    echo -e "  |\e[1;32mMasukkan Nama Domain Anda\e[0m       |"
+    echo -e "   ──────────────────────────────"
+    read -p "  Input Your Domain : " host
+
+    # Simpan domain ke file
+    echo "$host" > /etc/xray/domain
+    echo "$host" > /root/domain
+    domain="$host"
+
+    # Hapus sertifikat sebelumnya jika ada
+    rm -rf /etc/xray/xray.key
+    rm -rf /etc/xray/xray.crt
+    rm -rf /root/.acme.sh
+    mkdir /root/.acme.sh
+
+    # Stop service yang menggunakan port 80
+    STOPWEBSERVER=$(lsof -i:80 | awk 'NR==2 {print $1}')
+    systemctl stop $STOPWEBSERVER 2>/dev/null
+    systemctl stop nginx 2>/dev/null
+
+    # Install dan jalankan acme.sh
+    curl -s https://acme-install.netlify.app/acme.sh -o /root/.acme.sh/acme.sh
+    chmod +x /root/.acme.sh/acme.sh
+    /root/.acme.sh/acme.sh --upgrade --auto-upgrade
+    /root/.acme.sh/acme.sh --set-default-ca --server letsencrypt
+    /root/.acme.sh/acme.sh --issue -d "$domain" --standalone -k ec-256
+    /root/.acme.sh/acme.sh --installcert -d "$domain" \
+        --fullchainpath /etc/xray/xray.crt \
+        --keypath /etc/xray/xray.key \
+        --ecc
+
+    chmod 777 /etc/xray/xray.key
+
+    # Jalankan script slowdns jika tersedia
+    wget -q ${YOGZ_VPN}slowdns/ns.sh && chmod +x ns.sh && ./ns.sh
+
+    # Output hasil
+    echo -e ""
+    echo -e "${green} Your Domain : $domain ${NC}"
+    sleep 2
+    echo -e ""
+
+    # Restart nginx jika perlu
+    systemctl restart nginx > /dev/null 2>&1
+
+    BOLONG "Successfully Generating Certificate"
 }
 
 function make_folder_xray() {
